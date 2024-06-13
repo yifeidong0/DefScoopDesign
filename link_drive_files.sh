@@ -20,8 +20,8 @@
 
 # NOTE: It is assumed that this script will run from the root of the project.
 
-# This script will create symlinks between files in the `drive_files` directory
-# and the corresponding files in the project.
+# This script will create synlinks between files in the `drive_files` directory and the
+# corresponding files in the project.
 
 FILE_LIST=drive_files_list.txt
 DRIVE_FILES_DIR=drive_files

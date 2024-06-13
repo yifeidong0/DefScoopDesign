@@ -56,7 +56,7 @@ asset_options.angular_damping = 0.0  # Angular damping for rigid bodies
 # asset_options.disable_gravity = True
 # Activates PD position, velocity, or torque controller, instead of doing
 # DOF control in post-processing
-asset_options.default_dof_drive_mode = gymapi.DOF_MODE_POS
+asset_options.default_dof_drive_mode = gymapi.DOF_MODE_POS # DOF_MODE_EFFORT
 
 asset_options.fix_base_link = True
 gripper_asset = gym.load_asset(sim, gripper_asset_root, gripper_asset_file, asset_options)
@@ -118,22 +118,23 @@ while not gym.query_viewer_has_closed(viewer):
         dof_states = gym.get_actor_dof_states(env, gripper_handle, gymapi.STATE_ALL)
         dof_positions = dof_states['pos']
 
-        # Example of closing gripper and lifting
+        # Example of closing gripper
         dof_positions[1] = np.min((i/2000, 1))  # Close left tip
         dof_positions[3] = np.min((i/2000, 1))   # Close right tip
         gym.set_actor_dof_position_targets(env, gripper_handle, dof_positions)
 
-        # Example of closing gripper with torque noise
-        dof_torques = np.zeros(dof_states['effort'].shape)
+        # # Example of closing gripper with torque noise (DOF_MODE_EFFORT required)
+        # num_dofs = gym.get_actor_dof_count(env, gripper_handle)
+        # dof_torques = np.zeros(num_dofs, dtype=np.float32)
 
-        # Apply random torque noise to joint 1 and joint 3
-        torque_noise_1 = random.uniform(-0.01, 0.01)  # Random torque noise for joint 1
-        torque_noise_3 = random.uniform(-0.01, 0.01)  # Random torque noise for joint 3
+        # # Apply random torque noise to joint 1 and joint 3
+        # torque_noise_1 = random.uniform(-1,1)  # Random torque noise for joint 1
+        # torque_noise_3 = random.uniform(-1,1)  # Random torque noise for joint 3
 
-        dof_torques[1] = torque_noise_1  # Add torque noise to joint 1
-        dof_torques[3] = torque_noise_3  # Add torque noise to joint 3
+        # dof_torques[1] = torque_noise_1  # Add torque noise to joint 1
+        # dof_torques[3] = torque_noise_3  # Add torque noise to joint 3
 
-        gym.apply_actor_dof_efforts(env, gripper_handle, dof_torques)
+        # gym.apply_actor_dof_efforts(env, gripper_handle, dof_torques)
 
     # Update the viewer
     gym.step_graphics(sim)
